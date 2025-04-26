@@ -7,17 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-//public record ObraDTO(
-//	    String nome,
-//	    String descricao,
-//	    LocalDate dataInicio,
-//	    BigDecimal valorTotal
-//	) {}
-
 public record ObraDTO(
 	    @NotBlank String nome,
 	    String descricao,
 	    @NotNull LocalDate dataInicio,
 	    @NotNull @Positive BigDecimal valorTotal,
 	    @NotNull Long clienteId
-	) {}
+) {}

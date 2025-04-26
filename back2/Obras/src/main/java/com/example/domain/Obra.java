@@ -16,6 +16,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 
 public class Obra {
@@ -31,28 +36,32 @@ public class Obra {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable = false)
-	private String nome;
-	private String descricao;
-	
-	@Column(nullable = false)
-	private LocalDate dataInicio;
-	private LocalDate dataFim;
-	
-	@Column(nullable = false, precision = 15, scale = 2)
-	private BigDecimal valorTotal;
-	    
+	@NotBlank(message = "Nome é obrigatório")
+    private String nome;
+
+    private String descricao;
+
+    @NotNull(message = "Data de início é obrigatória")
+    private LocalDate dataInicio;
+
+    private LocalDate dataFim;
+
+    @NotNull(message = "Valor total é obrigatório")
+    @Positive(message = "Valor deve ser positivo")
+    @Column(precision = 15, scale = 2)
+    private BigDecimal valorTotal;
+
     @Enumerated(EnumType.STRING)
     private StatusObra status = StatusObra.EM_ANDAMENTO;
-	    
-    @OneToMany(mappedBy = "obra", cascade = CascadeType.ALL)
-    private List<Gasto> gastos = new ArrayList<>();
-	    
-    public enum StatusObra {
-        EM_ANDAMENTO, CONCLUIDA
-    }
-    
+
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
+
+    @OneToMany(mappedBy = "obra", cascade = CascadeType.ALL)
+    private List<Gasto> gastos = new ArrayList<>();
+
+    public enum StatusObra {
+        EM_ANDAMENTO, CONCLUIDA
+    }
 }
