@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Obras</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Seus estilos personalizados -->
+    <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+                    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+                    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+                    <path d="M18 22h2a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/>
+                    <path d="M10 6h4"/>
+                    <path d="M10 10h4"/>
+                    <path d="M10 14h4"/>
+                    <path d="M10 18h4"/>
+                </svg>
+                <span>Gestão de Obras</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="tabs">
+            <button class="tab-button active" data-tab="obras">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+                    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+                    <path d="M18 22h2a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/>
+                </svg>
+                Nova Obra
+            </button>
+            <button class="tab-button" data-tab="gerenciamento">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                    <path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z"/>
+                    <path d="M12 11h4"/>
+                    <path d="M12 16h4"/>
+                    <path d="M8 11h.01"/>
+                    <path d="M8 16h.01"/>
+                </svg>
+                Gerenciamento
+            </button>
+            <button class="tab-button" data-tab="relatorios">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18"/>
+                    <path d="m19 9-5 5-4-4-3 3"/>
+                </svg>
+                Relatórios
+            </button>
+        </div>
+
+        <div id="obras" class="tab-content active">
+            <div class="card">
+                <h3>Nova Obra</h3>
+                <form id="form-obra">
+                    <div class="form-group">
+                        <label>Nome da Obra</label>
+                        <input type="text" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea name="descricao" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Início</label>
+                        <input type="date" name="dataInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Total da Obra</label>
+                        <input type="text" name="valorTotal" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 5v14"/>
+                            <path d="M5 12h14"/>
+                        </svg>
+                        Adicionar Obra
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="gerenciamento" class="tab-content">
+            <div id="lista-obras" class="card-grid"></div>
+
+            <div id="conteudo-gerenciamento" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="obra-selecionada-titulo"></h3>
+                        <button onclick="fecharGerenciamento()" class="btn-close">×</button>
+                    </div>
+                    <div class="card">
+                        <h3>Registrar Gasto</h3>
+                        <div id="saldo-disponivel" class="alert">
+                            <p>Saldo Disponível:</p>
+                            <p class="saldo"></p>
+                        </div>
+                        <div id="msg-obra-concluida" class="alert alert-info" style="display: none;">
+                            <p>Esta obra já foi concluída. Não é possível adicionar novos gastos.</p>
+                        </div>
+                        <form id="form-gasto">
+                            <div class="form-group">
+                                <label>Data</label>
+                                <input type="date" name="data" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor</label>
+                                <input type="text" name="valor" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea name="descricao" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 5v14"/>
+                                    <path d="M5 12h14"/>
+                                </svg>
+                                Registrar Gasto
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>Gastos Registrados</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Valor</th>
+                                        <th>Descrição</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-gastos"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="relatorios" class="tab-content">
+            
+            
+            <!-- Abas dentro dos relatórios -->
+            <div class="relatorio-abas">
+                <button class="relatorio-tab-button active" data-relatorio-tab="em-andamento">
+                    Obras em Andamento (<span id="total-em-andamento">0</span>)
+                </button>
+                <button class="relatorio-tab-button" data-relatorio-tab="concluidas">
+                    Obras Concluídas (<span id="total-concluidas">0</span>)
+                </button>
+            </div>
+            
+            <!-- Conteúdo das abas -->
+            <div id="relatorio-em-andamento" class="relatorio-tab-content active">
+                <div class="relatorio-secao">
+                    <table class="tabela-relatorio">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Valor Total</th>
+                                <th>Total Gasto</th>
+                                <th>Saldo</th>
+                                <th>Lucros</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resumo-obras-em-andamento">
+                            <!-- Obras em andamento serão inseridas aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="relatorio-concluidas" class="relatorio-tab-content">
+                <div class="relatorio-secao">
+                    <table class="tabela-relatorio">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Valor Total</th>
+                                <th>Total Gasto</th>
+                                <th>Saldo</th>
+                                <th>Lucros</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resumo-obras-concluidas">
+                            <!-- Obras concluídas serão inseridas aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="relatorio-filtros">
+                <div class="filtro-periodo">
+                    <label for="mes-relatorio">Mês:</label>
+                    <select id="mes-relatorio">
+                        <option value="0">Janeiro</option>
+                        <option value="1">Fevereiro</option>
+                        <option value="2">Março</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Maio</option>
+                        <option value="5">Junho</option>
+                        <option value="6">Julho</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Setembro</option>
+                        <option value="9">Outubro</option>
+                        <option value="10">Novembro</option>
+                        <option value="11">Dezembro</option>
+                    </select>
+                    
+                    <label for="ano-relatorio">Ano:</label>
+                    <select id="ano-relatorio">
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+                <h3>Relatório de <span id="mes-atual-relatorio">Mês/Ano</span></h3>
+            </div>
+    </main>
+
+    <div id="modal-confirmar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Finalização</h3>
+                <button onclick="fecharModalConfirmar()" class="btn-close">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja finalizar esta obra?</p>
+                <p>Esta ação não poderá ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="fecharModalConfirmar()" class="btn btn-secondary">Não</button>
+                <button onclick="confirmarFinalizarObra()" class="btn btn-primary">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
